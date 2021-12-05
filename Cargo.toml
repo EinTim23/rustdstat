@@ -1,0 +1,12 @@
+[package]
+name = "eintimdstatrs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lazy_static = "1.4.0"
+tokio = { version = "0.2", features = ["macros", "sync", "rt-threaded"] }
+warp = "0.2"
+futures = { version = "0.3", default-features = true }
