@@ -37,7 +37,7 @@ async fn main() {
         std::process::exit(1);
     }
     let _scheduler = thread::spawn(|| {
-        let wait_time = Duration::from_millis(1000);
+        let wait_time = Duration::from_millis(1200);
         loop {
             let start = Instant::now();
             let _thread_a = thread::spawn(move || block_on(handler::reset()));
