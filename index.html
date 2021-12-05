@@ -73,13 +73,14 @@
                 }]
             });
  
-            let ws = new WebSocket("ws://" + location.host + "/ws");
- 
-            ws.onmessage = (event) => {
-                let requests = Number(event.data);
+            setInterval(function(){
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", "http://" +  location.host + "/getc", false );
+                xmlHttp.send( null );
+                let requests = Number(xmlHttp.responseText);
                 let time = new Date().getTime();
                 chart.series[0].addPoint([time, requests], true, chart.series[0].points.length > 60);
-            }
+            }, 1000);
  
         }
     </script>

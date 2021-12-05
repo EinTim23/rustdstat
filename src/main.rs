@@ -1,14 +1,12 @@
 use std::{thread,time::{Duration, Instant}};
 use futures::executor::block_on;
 use std::collections::HashMap;
-use std::convert::Infallible;
 use std::sync::Arc;
 use tokio::sync::{mpsc, RwLock};
 use warp::{ws::Message, Filter, Rejection};
 use lazy_static::lazy_static;
 
 mod handler;
-mod ws;
 
 type Result<T> = std::result::Result<T, Rejection>;
 type Clientlist = Arc<RwLock<HashMap<String, Client>>>;
@@ -52,14 +50,10 @@ async fn main() {
     
     let index_route = warp::path::end().and_then(handler::index_handler);
     let dstat_route = warp::path!("dstat").and_then(handler::dstat_handler);
-    let ws_route = warp::path("ws")
-        .and(warp::ws())
-        .and(with_clients(CLIENTS.clone()))
-        .and_then(handler::ws_handler);
-
+    let getc_route = warp::path!("getc").and_then(handler::getc_handler);
     let routes = index_route
         .or(dstat_route)
-        .or(ws_route)
+        .or(getc_route)
         .with(warp::cors().allow_any_origin());
     println!("EinTim Layer 7 DSTAT coded by Da Mivolis#1337 Port: {}", argv[1].parse::<i32>().unwrap());
     let addr: String = "0.0.0.0:".to_string() + &argv[1];
@@ -67,8 +61,4 @@ async fn main() {
         .parse()
         .expect("Unable to parse socket address");
     warp::serve(routes).run(server).await;
-}
-
-fn with_clients(clients2: Clientlist) -> impl Filter<Extract = (Clientlist,), Error = Infallible> + Clone {
-    warp::any().map(move || clients2.clone())
 }
